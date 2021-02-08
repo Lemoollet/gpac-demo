@@ -4,6 +4,7 @@ import {
   Switch,
   Route,
   Redirect,
+  Link,
 } from "react-router-dom";
 import {
   Drawer,
@@ -29,7 +30,7 @@ import {
 } from "@material-ui/icons";
 
 import logo from "./components/logo.svg";
-import Dashboard from "./Layouts/Dashboard";
+import Market from "./Layouts/Market";
 import Mapjs from "./Layouts/Map";
 
 export default function App() {
@@ -67,8 +68,8 @@ export default function App() {
             </div>
             {drawerList.map((item, i) => (
               <Box
-                component="link"
-                to="/map"
+                component={Link}
+                to={item.path}
                 display="flex"
                 justifyContent="flex-start"
                 alignItems="center"
@@ -76,6 +77,7 @@ export default function App() {
                   backgroundColor: i === index ? "red" : "transparent",
                   width: "100%",
                   marginBottom: 15,
+                  textDecoration: "none",
                 }}
               >
                 <Button
@@ -191,9 +193,9 @@ export default function App() {
         </Box>
         <Switch>
           <Route exact path="/">
-            <Redirect to="/dashboard" />
+            <Redirect to="/market" />
           </Route>
-          <Route path="/dashboard" exact component={Dashboard}></Route>
+          <Route path="/market" exact component={Market}></Route>
           <Route path="/map" exact component={Mapjs} />
         </Switch>
       </div>
@@ -245,14 +247,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const drawerList = [
-  { name: "Dashboard", icon: <DonutLarge /> },
-  { name: "Job Orders", icon: <Work /> },
-  { name: "Market", icon: <People /> },
-  { name: "Companies", icon: <Business /> },
-  { name: "S. Projects", icon: <Telegram /> },
-  { name: "Maps", icon: <PinDrop /> },
-  { name: "Tasks Tool", icon: <Assignment /> },
-  { name: "Sendouts", icon: <ReplyAll /> },
+  { name: "Dashboard", icon: <DonutLarge />, path: "/dashboard" },
+  { name: "Job Orders", icon: <Work />, path: "/job" },
+  { name: "Market", icon: <People />, path: "/market" },
+  { name: "Companies", icon: <Business />, path: "/companies" },
+  { name: "S. Projects", icon: <Telegram />, path: "/projects" },
+  { name: "Maps", icon: <PinDrop />, path: "/map" },
+  { name: "Tasks Tool", icon: <Assignment />, path: "/task" },
+  { name: "Sendouts", icon: <ReplyAll />, path: "/sendouts" },
 ];
 
 const days = [

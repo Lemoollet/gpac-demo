@@ -1,10 +1,13 @@
 import React from "react";
-import { FiberManualRecord, AddCircleOutline } from "@material-ui/icons";
+import {
+  FiberManualRecord,
+  AddCircleOutline,
+  ArrowBackIos,
+} from "@material-ui/icons";
 import {
   Button,
   Box,
   makeStyles,
-  Divider,
   Typography,
   Table,
   TableBody,
@@ -13,13 +16,16 @@ import {
   TableHead,
   TableRow,
   Avatar,
-  Paper,
+  Modal,
+  Backdrop,
 } from "@material-ui/core";
 
 import test from "../images/test.jpeg";
 
 export default function Dashboard() {
   const classes = useStyles();
+
+  const [modal, setModal] = React.useState(false);
 
   return (
     <div style={{ paddingLeft: 140 }}>
@@ -36,6 +42,7 @@ export default function Dashboard() {
           </Typography>
         </Box>
         <Button
+          onClick={() => setModal(true)}
           size="small"
           variant="contained"
           endIcon={<AddCircleOutline />}
@@ -197,6 +204,40 @@ export default function Dashboard() {
           </Table>
         </TableContainer>
       </div>
+      <Modal
+        style={{ overflow: "scroll" }}
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+        open={modal}
+        onClose={() => setModal(false)}
+      >
+        <div
+          style={{
+            margin: 50,
+            backgroundColor: "#24292E",
+          }}
+        >
+          <Box style={{ width: "100%", backgroundColor: "#20232B" }}>
+            <Button
+              onClick={() => setModal(false)}
+              style={{ color: "white" }}
+              startIcon={<ArrowBackIos style={{ color: "red" }} />}
+            >
+              Back
+            </Button>
+          </Box>
+          <Box style={{ marginTop: 25 }}>
+            <Box display="flex" alignItems="center">
+              <FiberManualRecord style={{ color: "#FD3939", marginRight: 8 }} />
+              <Typography variant="h5" style={{ color: "white" }}>
+                New Talent
+              </Typography>
+            </Box>
+          </Box>
+        </div>
+      </Modal>
     </div>
   );
 }
@@ -213,48 +254,39 @@ const useStyles = makeStyles((theme) => ({
 
 const rows = [
   {
-    name: "Anthony Gonzales",
-    rol: "Construction Manager",
-    industry: "asd",
-    jobPosition: "kajsdf",
-    phone: 654,
-    salary: 542,
+    name: "Samantha Wong",
+    rol: "Architect",
+    industry: "Construction",
+    jobPosition: "Project Manager",
+    phone: 5566778899,
+    salary: "$ 100,000.00 MXN",
     location: "NJ",
   },
   {
-    name: "Anthony Gonzales",
-    rol: "Construction Manager",
-    industry: "asd",
-    jobPosition: "kajsdf",
-    phone: 654,
-    salary: 542,
+    name: "Samantha Wong",
+    rol: "Architect",
+    industry: "Construction",
+    jobPosition: "Project Manager",
+    phone: 5566778899,
+    salary: "$ 100,000.00 MXN",
     location: "NJ",
   },
   {
-    name: "Anthony Gonzales",
-    rol: "Construction Manager",
-    industry: "asd",
-    jobPosition: "kajsdf",
-    phone: 654,
-    salary: 542,
+    name: "ALi Malik",
+    rol: "Truss Designer",
+    industry: "Construction",
+    jobPosition: "Project Manager",
+    phone: 5566778899,
+    salary: "$ 100,000.00 MXN",
     location: "NJ",
   },
   {
-    name: "Anthony Gonzales",
-    rol: "Construction Manager",
-    industry: "asd",
-    jobPosition: "kajsdf",
-    phone: 654,
-    salary: 542,
-    location: "NJ",
-  },
-  {
-    name: "Anthony Gonzales",
-    rol: "Construction Manager",
-    industry: "asd",
-    jobPosition: "kajsdf",
-    phone: 654,
-    salary: 542,
+    name: "Ana Jackson",
+    rol: "Building Analyst",
+    industry: "Construction",
+    jobPosition: "Project Manager",
+    phone: 5566778899,
+    salary: "$ 100,000.00 MXN",
     location: "NJ",
   },
 ];
