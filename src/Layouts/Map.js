@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Box, makeStyles, Typography } from "@material-ui/core";
 import ReactMapGL, { Popup } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
