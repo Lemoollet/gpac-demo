@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from "axios";
 import {
   FiberManualRecord,
   AddCircleOutline,
@@ -18,45 +19,76 @@ import {
   Avatar,
   Modal,
   Backdrop,
+  TextField,
+  withStyles,
 } from "@material-ui/core";
 
 import test from "../images/test.jpeg";
+import { appId, parseURL } from "../config/variables";
 
 export default function Dashboard() {
   const classes = useStyles();
 
   const [modal, setModal] = React.useState(false);
+  const [rows, setRows] = React.useState([]);
+  const [refresh, setRefresh] = React.useState(true);
+  const [candidate, setCandidate] = React.useState({
+    name: "",
+    phone: "",
+    email: "",
+    location: "",
+    wishSalary: "",
+    position: "",
+  });
 
-  const renderModal = () => (
-    <div
-      style={{
-        margin: 50,
-        backgroundColor: "#24292E",
-      }}
-    >
-      <Box style={{ width: "100%", backgroundColor: "#20232B" }}>
-        <Button
-          onClick={() => setModal(false)}
-          style={{ color: "white" }}
-          startIcon={<ArrowBackIos style={{ color: "red" }} />}
-        >
-          Back
-        </Button>
-      </Box>
-      <Box style={{ marginTop: 25 }}>
-        <Box display="flex" alignItems="center">
-          <FiberManualRecord style={{ color: "#FD3939", marginRight: 8 }} />
-          <Typography variant="h5" style={{ color: "white" }}>
-            New Talent
-          </Typography>
-        </Box>
-      </Box>
-      <Box display="flex">
-        <Box style={{ width: "20%", backgroundColor: "red" }}></Box>
-        <Box style={{ width: "80%", backgroundColor: "blue" }}></Box>
-      </Box>
-    </div>
-  );
+  useEffect(() => {
+    getCandidates();
+  }, [refresh]);
+
+  const addNewTalent = () => {
+    console.log(candidate);
+    let params = candidate;
+    axios
+      .post(`${parseURL}classes/Candidato`, params, {
+        headers: {
+          "X-Parse-Application-Id": appId,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setModal(false);
+        setRefresh(!refresh);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getCandidates = () => {
+    let constraints = JSON.stringify({
+      reclutador: {
+        __type: "Pointer",
+        className: "Reclutador",
+        objectId: "dfdTuF62F3",
+      },
+    });
+    axios
+      .get(
+        `${parseURL}classes/Candidato?include=reclutador&where=${constraints}`,
+        {
+          headers: {
+            "X-Parse-Application-Id": appId,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data.results);
+        setRows(res.data.results);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   return (
     <div style={{ paddingLeft: 140 }}>
@@ -69,7 +101,7 @@ export default function Dashboard() {
         <Box display="flex" alignItems="center">
           <FiberManualRecord style={{ color: "#FD3939", marginRight: 8 }} />
           <Typography variant="h5" style={{ color: "white" }}>
-            Market
+            See As Muñoz L.
           </Typography>
         </Box>
         <Button
@@ -98,19 +130,19 @@ export default function Dashboard() {
                   Name
                 </TableCell>
                 <TableCell align="left" style={{ color: "white" }}>
-                  Industry
-                </TableCell>
-                <TableCell align="left" style={{ color: "white" }}>
-                  Job Position
-                </TableCell>
-                <TableCell align="left" style={{ color: "white" }}>
                   Phone
+                </TableCell>
+                <TableCell align="left" style={{ color: "white" }}>
+                  Email
+                </TableCell>
+                <TableCell align="left" style={{ color: "white" }}>
+                  Location
                 </TableCell>
                 <TableCell align="left" style={{ color: "white" }}>
                   Salary
                 </TableCell>
                 <TableCell align="left" style={{ color: "white" }}>
-                  Location
+                  Recruiter
                 </TableCell>
                 <TableCell align="left"></TableCell>
               </TableRow>
@@ -150,20 +182,10 @@ export default function Dashboard() {
                           {row.name}
                         </Typography>
                         <Typography className={classes.lightText}>
-                          {row.rol}
+                          Construction Manager
                         </Typography>
                       </Box>
                     </Box>
-                  </TableCell>
-                  <TableCell align="left">
-                    <Typography className={classes.lightText}>
-                      {row.industry}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align="left">
-                    <Typography className={classes.lightText}>
-                      {row.jobPosition}
-                    </Typography>
                   </TableCell>
                   <TableCell align="left">
                     <Typography className={classes.lightText}>
@@ -172,12 +194,22 @@ export default function Dashboard() {
                   </TableCell>
                   <TableCell align="left">
                     <Typography className={classes.lightText}>
-                      {row.salary}
+                      {row.email}
                     </Typography>
                   </TableCell>
                   <TableCell align="left">
                     <Typography className={classes.lightText}>
                       {row.location}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="left">
+                    <Typography className={classes.lightText}>
+                      {row.wishSalary}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="left">
+                    <Typography className={classes.lightText}>
+                      {row.reclutador.Name}
                     </Typography>
                   </TableCell>
                   <TableCell align="left">
@@ -207,6 +239,7 @@ export default function Dashboard() {
         <div
           style={{
             margin: 50,
+            padding: 50,
             backgroundColor: "#24292E",
           }}
         >
@@ -240,7 +273,7 @@ export default function Dashboard() {
                 style={{ width: 176, height: 179, borderRadius: 120 }}
               />
               <Button
-                onClick={() => setModal(true)}
+                onClick={addNewTalent}
                 size="small"
                 variant="contained"
                 style={{
@@ -254,7 +287,6 @@ export default function Dashboard() {
                 Save as draft
               </Button>
               <Button
-                onClick={() => setModal(true)}
                 size="small"
                 variant="contained"
                 style={{
@@ -268,7 +300,7 @@ export default function Dashboard() {
                 Save and send to coach
               </Button>
               <Button
-                onClick={() => setModal(true)}
+                onClick={() => setModal(false)}
                 size="small"
                 variant="contained"
                 style={{
@@ -283,7 +315,7 @@ export default function Dashboard() {
                 Discard
               </Button>
             </Box>
-            <Box style={{ width: "70%", backgroundColor: "blue" }}>
+            <Box style={{ width: "70%" }}>
               <Button
                 variant="contained"
                 color="secondary"
@@ -306,12 +338,88 @@ export default function Dashboard() {
                 Secondary
               </Button>
               <Box
+                display="flex"
+                flexDirection="row"
                 style={{
                   width: "90%",
                   backgroundColor: "#34343C",
-                  height: 100,
+                  paddingLeft: 25,
+                  paddingBottom: 25,
                 }}
-              ></Box>
+              >
+                <Box>
+                  <CssTextField
+                    className={classes.margin}
+                    label="Name"
+                    variant="outlined"
+                    onChange={(e) =>
+                      setCandidate({
+                        ...candidate,
+                        name: e.target.value,
+                      })
+                    }
+                  />
+                  <CssTextField
+                    className={classes.margin}
+                    label="Phone"
+                    type="number"
+                    variant="outlined"
+                    onChange={(e) =>
+                      setCandidate({
+                        ...candidate,
+                        phone: Number(e.target.value),
+                      })
+                    }
+                  />
+                  <CssTextField
+                    className={classes.margin}
+                    label="Email"
+                    variant="outlined"
+                    onChange={(e) =>
+                      setCandidate({
+                        ...candidate,
+                        email: e.target.value,
+                      })
+                    }
+                  />
+                </Box>
+                <Box>
+                  <CssTextField
+                    className={classes.margin}
+                    label="Location"
+                    variant="outlined"
+                    onChange={(e) =>
+                      setCandidate({
+                        ...candidate,
+                        location: e.target.value,
+                      })
+                    }
+                  />
+                  <CssTextField
+                    className={classes.margin}
+                    label="Wish Salary"
+                    type="number"
+                    variant="outlined"
+                    onChange={(e) =>
+                      setCandidate({
+                        ...candidate,
+                        wishSalary: e.target.value,
+                      })
+                    }
+                  />
+                  <CssTextField
+                    className={classes.margin}
+                    label="Position"
+                    variant="outlined"
+                    onChange={(e) =>
+                      setCandidate({
+                        ...candidate,
+                        position: e.target.value,
+                      })
+                    }
+                  />
+                </Box>
+              </Box>
             </Box>
           </Box>
         </div>
@@ -333,43 +441,32 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 10,
     color: "#CECECE",
   },
+  margin: {
+    marginTop: 25,
+  },
 }));
 
-const rows = [
-  {
-    name: "Samantha Wong",
-    rol: "Architect",
-    industry: "Construction",
-    jobPosition: "Project Manager",
-    phone: 5566778899,
-    salary: "$ 100,000.00 MXN",
-    location: "NJ",
+const CssTextField = withStyles({
+  root: {
+    "& label.Mui-focused": {
+      color: "white",
+    },
+    "& label": {
+      color: "white",
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "white",
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "white",
+      },
+      "&:hover fieldset": {
+        borderColor: "white",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "white",
+      },
+    },
   },
-  {
-    name: "Samantha Wong",
-    rol: "Architect",
-    industry: "Construction",
-    jobPosition: "Project Manager",
-    phone: 5566778899,
-    salary: "$ 100,000.00 MXN",
-    location: "NJ",
-  },
-  {
-    name: "ALi Malik",
-    rol: "Truss Designer",
-    industry: "Construction",
-    jobPosition: "Project Manager",
-    phone: 5566778899,
-    salary: "$ 100,000.00 MXN",
-    location: "NJ",
-  },
-  {
-    name: "Ana Jackson",
-    rol: "Building Analyst",
-    industry: "Construction",
-    jobPosition: "Project Manager",
-    phone: 5566778899,
-    salary: "$ 100,000.00 MXN",
-    location: "NJ",
-  },
-];
+})(TextField);

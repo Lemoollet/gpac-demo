@@ -40,6 +40,7 @@ export default function Map() {
       <Box style={{ width: "30%", padding: 15 }}>
         {candidatos.map((candidato, i) => (
           <Box
+          key={i}
             display="flex"
             justifyContent="space-between"
             onClick={() => candidateLocation(candidato, i)}

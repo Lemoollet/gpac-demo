@@ -32,6 +32,7 @@ import {
 import logo from "./components/logo.svg";
 import Market from "./Layouts/Market";
 import Mapjs from "./Layouts/Map";
+import Director from "./Layouts/Director";
 
 export default function App() {
   const classes = useStyles();
@@ -68,6 +69,7 @@ export default function App() {
             </div>
             {drawerList.map((item, i) => (
               <Box
+                key={i}
                 component={Link}
                 to={item.path}
                 display="flex"
@@ -169,7 +171,6 @@ export default function App() {
               </Box>
             </Box>
             <Menu
-              id="simple-menu"
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}
@@ -197,6 +198,7 @@ export default function App() {
           </Route>
           <Route path="/market" exact component={Market}></Route>
           <Route path="/map" exact component={Mapjs} />
+          <Route path="/director" exact component={Director} />
         </Switch>
       </div>
     </Router>
@@ -247,7 +249,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const drawerList = [
-  { name: "Dashboard", icon: <DonutLarge />, path: "/dashboard" },
+  { name: "Dashboard", icon: <DonutLarge />, path: "/director" },
   { name: "Job Orders", icon: <Work />, path: "/job" },
   { name: "Market", icon: <People />, path: "/market" },
   { name: "Companies", icon: <Business />, path: "/companies" },
